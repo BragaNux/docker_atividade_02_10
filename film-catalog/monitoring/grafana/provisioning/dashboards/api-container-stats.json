@@ -1,0 +1,32 @@
+{
+"title": "API Container Stats",
+"timezone": "browser",
+"panels": [
+{
+"type": "graph",
+"title": "CPU usage (API)",
+"targets": [
+{
+"expr": "sum(rate(container_cpu_usage_seconds_total{container_label_com_docker_compose_service=\"api\"}[1m])) by (container_label_com_docker_compose_service)",
+"legendFormat": "{{container_label_com_docker_compose_service}}"
+}
+],
+"id": 1,
+"lines": true
+},
+{
+"type": "graph",
+"title": "Memory usage (API)",
+"targets": [
+{
+"expr": "container_memory_usage_bytes{container_label_com_docker_compose_service=\"api\"}",
+"legendFormat": "{{container_label_com_docker_compose_service}}"
+}
+],
+"id": 2,
+"lines": true
+}
+],
+"schemaVersion": 27,
+"version": 1
+}

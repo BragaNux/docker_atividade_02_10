@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catálogo de Filmes</title>
+<style>
+body{font-family:system-ui,Arial,Helvetica,sans-serif;margin:32px;max-width:900px}
+input,button{padding:8px;margin:4px}
+table{border-collapse:collapse;width:100%}
+td,th{border:1px solid #ddd;padding:8px}
+</style>
+</head>
+<body>
+<h1>🎬 Catálogo de Filmes</h1>
+<section>
+<h3>Novo filme</h3>
+<input id="title" placeholder="Título"/>
+<input id="director" placeholder="Diretor"/>
+<input id="year" type="number" placeholder="Ano"/>
+<button onclick="addMovie()">Adicionar</button>
+</section>
+<section>
+<h3>Lista</h3>
+<table id="tbl"><thead><tr><th>ID</th><th>Título</th><th>Diretor</th><th>Ano</th><th>Ações</th></tr></thead><tbody></tbody></table>
+</section>
+<script>
+const API = location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
+
+
+async function load(){
+const r = await fetch(`${API}/movies`); const data = await r.json();
+const tb = document.querySelector('#tbl tbody'); tb.innerHTML = '';
+for(const m of data){
+const tr = document.createElement('tr');
+tr.innerHTML = `<td>${m.id}</td><td>${m.title}</td><td>${m.director||''}</td><td>${m.year||''}</td>
+<td><button onclick="del(${m.id})">Excluir</button></td>`;
+tb.appendChild(tr);
+}
+}
+async function addMovie(){
+const title = document.getElementById('title').value;
+const director = document.getElementById('director').value;
+const year = document.getElementById('year').value;
+await fetch(`${API}/movies`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({title, director, year})});
+load();
+}
+async function del(id){
+await fetch(`${API}/movies/${id}`, {method:'DELETE'});
+load();
+}
+load();
+</script>
+</body>
+</html>
